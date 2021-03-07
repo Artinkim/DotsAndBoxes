@@ -13,7 +13,7 @@ public class PlayerView extends JPanel implements MouseListener {
 	int[][] filledInBoxes;
 	float stepSize;
 	int dotSize;
-	Color[] playerColors = { new Color(3, 0, 5), new Color(250, 0, 5), new Color(3, 0, 250) };
+	Color[] playerColors = { new Color(255, 255, 255), new Color(250, 0, 5), new Color(3, 0, 250) };
 
 	PlayerView(Game game, int width, int height) {
 		this.game = game;
@@ -46,10 +46,12 @@ public class PlayerView extends JPanel implements MouseListener {
 	public void paintComponent(Graphics g) {
 		// System.out.println(game.n);
 		super.paintComponent(g);
+
 		stepSize = Math.min(this.getWidth() / (game.n + 2), this.getHeight() / (game.m + 2));
 		dotSize = (int) (stepSize / 5);
 		for (int i = 0; i < game.board.length; i++) {
 			for (int j = 0; j < game.board[i].length; j++) {
+
 				g.setColor(playerColors[game.board[i][j] + 1]);
 //				if (board[i][j] != -1) {
 //					
@@ -59,16 +61,16 @@ public class PlayerView extends JPanel implements MouseListener {
 				drawLine(i, j, g);
 			}
 		}
-		g.setColor(new Color(0, 0, 255));
+		g.setColor(new Color(0, 0, 0));
 		// System.out.println(game.n);
-		for (int i = 1; i <= game.n + 1; i++) {
+		for (int i = 1; i <= game.n + 1; i++) { // Dots
 			for (int j = 1; j <= game.m + 1; j++) {
 				g.fillRect((int) (i * stepSize), (int) (j * stepSize), dotSize, dotSize);
 			}
 		}
 		g.setColor(new Color(27, 55, 9));
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 25));
-		for (int i = 0; i < game.n; i++) {
+		for (int i = 0; i < game.n; i++) { // FilledInBoxes
 			for (int j = 0; j < game.m; j++) {
 				if (filledInBoxes[i][j] != -1)
 					g.drawString(filledInBoxes[i][j] + "", (int) ((i + 1.5) * stepSize), (int) ((j + 1.5) * stepSize));
@@ -120,8 +122,11 @@ public class PlayerView extends JPanel implements MouseListener {
 		if (game.whosTurn == 0)
 			return;
 		while (game.whosTurn == 1) {
-			int[] minMaxMove = Algorithms.minMax(0, 4, game);
+			int depth = 3 + (int) Math.pow(1.04, (double) game.movesMade);
+			System.out.println("Ai thinking with depth of " + depth);
+			int[] minMaxMove = Algorithms.minMax(0, depth, game);
 			// System.out.println("Aftert makin"+game.whosTurn);
+
 			System.out.println("Ai made move: " + minMaxMove[0] + " " + minMaxMove[1]);
 			filledInBoxes = game.makeMove(minMaxMove[0], minMaxMove[1], filledInBoxes);
 			// System.out.println(game.whosTurn);

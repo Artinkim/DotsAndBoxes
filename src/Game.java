@@ -8,6 +8,7 @@ public class Game extends JPanel {
 	int[] playerScores;
 	int whosTurn;
 	int boxesLeft;
+	int movesMade;
 
 	Game(int n, int m, int numberOfPlayers) {
 		this.n = n;
@@ -23,7 +24,7 @@ public class Game extends JPanel {
 			Arrays.fill(board[i], -1);
 		}
 		playerScores = new int[numberOfPlayers];
-
+		this.movesMade = 0;
 	}
 
 	public void decrementTurn() {
@@ -41,10 +42,12 @@ public class Game extends JPanel {
 		// System.out.println(whosTurn);
 		playerScores[whosTurn] -= boxesMade;
 		boxesLeft += boxesMade;
+		movesMade--;
 	}
 
 	public int makeMove(int i, int j) {
 		board[i][j] = whosTurn;
+		movesMade++;
 		int boxesMade = 0;
 		if (i % 2 == 0) { // Vertical line
 			if (i > 0 && board[i - 1][j] != -1 && board[i - 1][j + 1] != -1 && board[i - 2][j] != -1) { // Right
@@ -79,7 +82,7 @@ public class Game extends JPanel {
 					}
 				}
 				Arrays.fill(playerScores, -1);
-				playerScores[index] = Integer.MAX_VALUE;
+				playerScores[index] = n * m + 1;
 			}
 		} else {
 			incrementTurn();
@@ -89,13 +92,14 @@ public class Game extends JPanel {
 
 	public int[][] makeMove(int i, int j, int[][] filledInBoxes) {
 		board[i][j] = whosTurn;
+		movesMade++;
 		int boxesMade = 0;
 		if (i % 2 == 0) { // Vertical line
 			if (i > 0 && board[i - 1][j] != -1 && board[i - 1][j + 1] != -1 && board[i - 2][j] != -1) { // Right
 				filledInBoxes[((i - 1) / 2)][j] = whosTurn;
 				boxesMade++;
 				boxesLeft--;
-				
+
 			}
 			if (i < board.length - 1 && board[i + 1][j] != -1 && board[i + 1][j + 1] != -1 && board[i + 2][j] != -1) { // Left
 				filledInBoxes[(i / 2)][j] = whosTurn;
